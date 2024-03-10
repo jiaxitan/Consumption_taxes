@@ -1,7 +1,7 @@
 Inputs:
 1. I manually added column F, G and J to the color-coded file received from Jonathan. I ended up only using column J out of the new columns.
    Column J:
-     (a) -1: no color
+     (a) -1: no color or yellow
      (b) 0: Food at home
      (c) 1: Standard tax rates
      (d) 2: Special tax rates given JF code
