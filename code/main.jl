@@ -47,7 +47,7 @@ end
 
 # Add local tax rate
 df_food_tax = leftjoin(df_food_tax, df_standard_tax[:, [:state, :year, :local_tax]], on = [:state, :year])
-insertcols!(df_food_tax, :food_tax => df_food_tax.food_state_tax .+ df_food_tax.local_tax)
+insertcols!(df_food_tax, :food_tax => df_food_tax.food_state_tax .+ (df_food_tax.local_tax) .* (df_food_tax.food_state_tax .!= 0))
 
 CSV.write(output_path * "food tax rate.csv", df_food_tax)
 
@@ -90,11 +90,20 @@ CSV.write(output_path * "services tax rate.csv", df_services_tax)
 # Combine all of the above into the colo-coded file
 
 include(function_path * "read_color_code_file.jl")
+include(function_path * "read_output_format.jl")
+
 df_color_code = read_color_code(input_path * "cu-all-multi-year-2006-2012_new_Jiaxi.xlsx")
+deleteat!(df_color_code, ismissing.(df_color_code.Item) .& (df_color_code."JF code" .== "missing"))
+
+df_format = read_output_format(input_path * "category_format.xlsx")
+
 df_color_code[ismissing.(df_color_code.standard_code), :standard_code] .= -1;
 df_color_code[ismissing.(df_color_code.number_of_sub_components), :number_of_sub_components] .= 0;
 
+deleteat!(df_services_tax, .!in(df_color_code.JF).(df_services_tax.JF))
+
 for y in sample_year
+    println(y)
     states = unique(df_standard_tax[:, :state])
     df_out = copy(df_color_code)
     for s in states
@@ -104,16 +113,26 @@ for y in sample_year
         allowmissing!(df_out)
         df_out[df_out.standard_code .== 0, s_name] .= df_food_tax[(df_food_tax.state .== s) .& (df_food_tax.year .== y), :food_tax]
         df_out[df_out.standard_code .== 1, s_name] .= df_standard_tax[(df_standard_tax.state .== s) .& (df_standard_tax.year .== y), :standard_tax]
-        deleteat!(df_services_tax, .!in(df_out.JF).(df_services_tax.JF))
-        leftjoin(df_out[df_out.standard_code .== 2, :], df_services_tax[(df_services_tax.state .== s) .& (df_services_tax.year .== y), :], on = [:JF])
         df_out[df_out.standard_code .== 2, s_name] .= leftjoin(df_out[df_out.standard_code .== 2, :], df_services_tax[(df_services_tax.state .== s) .& (df_services_tax.year .== y), :], on = [:JF])[:, :services_tax]
         
-        df_out[df_out.standard_code .== -1, s_name] .= missing
+        for i in 1:nrow(df_out)
+            if (df_out[i, :number_of_sub_components] .!= 0)
+                n = df_out[i, :number_of_sub_components]
+                df_out[i, s_name] = sum(df_out[(i+1):(i+n), s_name] .* df_out[(i+1):(i+n), :shares_of_Components])
+            end 
+        end
+
+        df_out[(df_out.standard_code .== -1) .& (df_out.number_of_sub_components .== 0), s_name] .= missing
     end
 
-    df_out[df_out."JF code" .== "missing", "JF code"] .= ""
+    select!(df_out, Not(["JF code", "2015_sub", "2015", "shares of total expenditure", "shares_of_Components", "number_of_sub_components", "standard_code", "JF", "2010", "2010 share", "missing"]))
 
-    select!(df_out, Not(:JF))
+    deleteat!(df_out, ismissing.(df_out.Item))
+    df_out = leftjoin(df_out, df_format, on = :Item)
+    deleteat!(df_out, ismissing.(df_out.tax_rate_category))
+    select!(df_out, 1, :tax_rate_category, :)
+    df_out[df_out.tax_rate_category .== "Z", 3:end] .= 0.0
+
 
     XLSX.writetable(output_path * string(y) * "_tax_rates_by_CEX_states.xlsx", df_out)
 end
