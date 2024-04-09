@@ -2,7 +2,7 @@
     
 *Inputs*:   
 1. Standard tax rates: I used state and local tax rates in "input/Sales taxes on goods/Raw/[year]_aftertaxes.xlsx" (Column A:C). These are **produced by the Norwegian RA**. It looks like the set of files named "[year]_aftertaxes.xlsx" are cleaned version of the files named "salestaxstatelocal.xlsx".      
-   - There was a mistake in input file "2010_aftertaxes.xlsx" for Colorado. The raw file downloaded from tax foundation says 2.90, but the cleaned file showed 2.00. I manually          corrected it in the input file.     
+   - There was a mistake in input file "2010_aftertaxes.xlsx" for Colorado. The raw file downloaded from the Tax Foundation shows 2.90, but the cleaned file showed 2.00. I manually          corrected it in the input file.     
 2. Food tax rates: **I downloaded these** from the Book of States into "input/Taxes on Food at Home/Raw". I converted them to Excel files "[year] Sales Tax.xlsx" and saved in     "input/Taxes on Food at Home".     
 3. Services tax rates: I used "services2007_clean.xlsx" in the input folder. I **received this file from Jonathan**.     
 4. Color-coded input file: I used "input/cu-all-multi-year-2006-2012_new_Jiaxi.xlsx". I **received this file from Jonathan**, but added several columns.    
