@@ -5,7 +5,7 @@
    - There was a mistake in input file "2010_aftertaxes.xlsx" for Colorado. The raw file downloaded from tax foundation says 2.90, but the cleaned file showed 2.00. I manually          corrected it in the input file.     
 2. Food tax rates: **I downloaded these** from the Book of States into "input/Taxes on Food at Home/Raw". I converted them to Excel files "[year] Sales Tax.xlsx" and saved in     "input/Taxes on Food at Home".     
 3. Services tax rates: I used "services2007_clean.xlsx" in the input folder. I **received this file from Jonathan**.     
-4. Color-coded input file: I used "input/cu-all-multi-year-2006-2012_new_Jiaxi.xlsx". I **received this file from Jonathan**.    
+4. Color-coded input file: I used "input/cu-all-multi-year-2006-2012_new_Jiaxi.xlsx". I **received this file from Jonathan**, but added several columns.    
    Technical Notes:     
    - I manually added column F, G and J to the color-coded file received from Jonathan. Column F and G help with aggregating tax rates to the desired CEX expenditure aggregation       levels. Column J helps to identify what kind of tax rates we need to apply for each row.   
    - Column F: The subcompnent's expenditure share of the bigger component.   
