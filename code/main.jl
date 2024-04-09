@@ -10,12 +10,12 @@ sample_year = [2005, 2006, 2010, 2011, 2015, 2016]
 # Read Standard Tax rate
 
 include(function_path * "read_standard_tax.jl")
-df_2009 = clean_2009(input_path * "consumption_taxes/Sales taxes on goods/Raw/salestaxstatelocal09.xlsx")
+df_2009 = clean_2009(input_path * "Sales taxes on goods/Raw/salestaxstatelocal09.xlsx")
 
 df_standard_tax = DataFrame(state = String[], year = Int64[], state_tax = Float64[], local_tax = Float64[], standard_tax = Float64[])
 for y in sample_year
     # I deleted Column B of the 2010 input file, because it is just the abbreviation of statenames. Other input files used here don't have that column.
-    filename_tmp = input_path * "consumption_taxes/Sales taxes on goods/Raw/" * string(y) * "_aftertaxes.xlsx"
+    filename_tmp = input_path * "Sales taxes on goods/Raw/" * string(y) * "_aftertaxes.xlsx"
     df_y = read_standard_rate(filename_tmp, y)
     insertcols!(df_y, :year => y)
 
@@ -30,7 +30,7 @@ include(function_path * "read_food_tax.jl")
 
 df_food_tax = DataFrame(state = String[], year = Int64[], state_tax = Float64[], food_state_tax = Float64[])
 for y in sample_year
-    filename_tmp = input_path * "consumption_taxes/Taxes on Food at Home/" * string(y) * " Sales Tax.xlsx"
+    filename_tmp = input_path * "Taxes on Food at Home/" * string(y) * " Sales Tax.xlsx"
     df_y = read_food_tax(filename_tmp)
     insertcols!(df_y, :year => y)
 
@@ -69,7 +69,7 @@ select!(df_services_2007, Not(:state_postal))
 # Compute the ratio of sample-year state tax rate to 2007 state tax rate
 df_standard_tax = leftjoin(df_standard_tax, df_services_2007[df_services_2007.JF .== 0, [:services_state_tax, :state]], on= :state)
 insertcols!(df_standard_tax, :state_tax_ratio_2007 => df_standard_tax.state_tax ./ df_standard_tax.services_state_tax)
-# This step is ok because nan in our sample only happens when both state tax in our sample year and state tax in 2007 are 0.
+# This step is ok, because nan in our sample only happens when both state tax in our sample year and state tax in 2007 are 0.
 df_standard_tax[isnan.(df_standard_tax.state_tax_ratio_2007), :state_tax_ratio_2007] .= 1.0
 
 df_services_tax = DataFrame(JF = Int64[], state = String[], year = Int64[], services_state_tax = Float64[])
@@ -87,7 +87,7 @@ insertcols!(df_services_tax, :services_tax => df_services_tax.services_state_tax
 CSV.write(output_path * "services tax rate.csv", df_services_tax)
 
 #################################
-# Combine all of the above into the colo-coded file
+# Combine all of the above into the color-coded file
 
 include(function_path * "read_color_code_file.jl")
 include(function_path * "read_output_format.jl")

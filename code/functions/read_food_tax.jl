@@ -36,7 +36,7 @@ function read_food_tax(filepath)
     file.food_state_tax = parse.(Float64, file.food_state_tax)
     file.state_tax = parse.(Float64, file.state_tax)
 
-    # Fix the issue that sometime % passed down by dividing the number by 100
+    # Fix the issue that sometime % passed down by dividing the number by 100, instead of as string
     file[file.food_state_tax .< 1, :food_state_tax] .= file[file.food_state_tax .< 1, :food_state_tax] .* 100
     file[file.state_tax .< 1, :state_tax] .= file[file.state_tax .< 1, :state_tax] .* 100
 
