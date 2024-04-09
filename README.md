@@ -1,3 +1,5 @@
+[Archive] Nowergian RA: This folder contains everything that I received from Jonathan. I believe these are produced by the Norwegian RA.   
+    
 Inputs:   
 1. Standard tax rates: I used state and local tax rates in "input/Sales taxes on goods/Raw/[year]_aftertaxes.xlsx" (Column A:C). These are **produced by the Norwegian RA**. It looks like the set of files named "[year]_aftertaxes.xlsx" are cleaned version of the files named "salestaxstatelocal.xlsx".      
    - There was a mistake in input file main/input/consumption_taxes/Sales taxes on goods/Raw/2010_aftertaxes.xlsx for Colorado. The raw file downloaded from tax foundation says 2.90          but the cleaned file somehow says 2.00. I manually corrected it in the input file.     
@@ -12,7 +14,7 @@ Inputs:
         (b) 0: Food at home      
         (c) 1: Standard tax rates       
         (d) 2: Special tax rates given JF code       
-
+      
 Outputs:
 1. Standard tax rates by state and year: "output/standard tax rate.xlsx"   
 2. Food tax rates by state and year: "output/food tax rate.xlsx"   
